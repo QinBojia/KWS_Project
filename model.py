@@ -37,12 +37,7 @@ class DSConvBlock(nn.Module):
 
 
 class MobileNetStyleKWS(nn.Module):
-    """
-    KWS 模型：输入 (B, 1, T, n_mels)，当作单通道二维图。
-    你做“减少模型尺寸”的实验：调 width_mult
-    """
-
-    def __init__(self, num_classes: int, width_mult: float = 1.0, dropout: float = 0.1):
+    def __init__(self, num_classes: int, width_mult: float = 1.0, dropout: float = 0.1, depth_mult: float = 1.0):
         super().__init__()
 
         # 通道按 width_mult 缩放
@@ -59,15 +54,16 @@ class MobileNetStyleKWS(nn.Module):
         )
 
         # 13 个 DS blocks（常见 MobileNet 节奏：少数层 stride=2 下采样）
-        cfg = [
-            (c32,  1),
-            (c64,  1),
+        base_cfg = [
+            (c32, 1),
+            (c64, 1),
             (c128, 2),
             (c128, 1),
             (c256, 2),
             (c256, 1),
             (c512, 2),
             (c512, 1),
+            # 后面这些是重复段（可缩短）
             (c512, 1),
             (c512, 1),
             (c512, 1),
@@ -75,12 +71,22 @@ class MobileNetStyleKWS(nn.Module):
             (c512, 1),
         ]
 
+        # 让 depth_mult 只影响“重复段”的长度
+        fixed_part = base_cfg[:8]  # 到第 8 个为止（含第一个 c512 stride=1）
+        repeat_part = base_cfg[8:]  # 其余重复的 c512 stride=1
+
+        # 计算重复段要保留多少层
+        base_repeat = len(repeat_part)  # 原本 5 层
+        k = max(1, int(round(base_repeat * depth_mult)))
+        repeat_part = repeat_part[:k]
+
+        cfg = fixed_part + repeat_part
+
         blocks = []
         in_ch = c32
         for out_ch, stride in cfg:
             blocks.append(DSConvBlock(in_ch, out_ch, stride=stride))
             in_ch = out_ch
-
         self.features = nn.Sequential(*blocks)
 
         self.pool = nn.AdaptiveAvgPool2d((1, 1))

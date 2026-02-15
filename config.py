@@ -34,17 +34,17 @@ class AudioConfig:
 
 @dataclass
 class ModelConfig:
-    # 12-class KWS is the common setup: 10 keywords + unknown + silence
-    num_classes: int = 8
+    num_classes: int
     width_mult: float = 1.0
     dropout: float = 0.1
-    depth_mult: float = 1.0
+    depth_mult: float = 1.0   # NEW：控制层数/重复次数
+
 
 
 @dataclass
 class TrainConfig:
     batch_size: int = 512
-    epochs: int = 8
+    epochs: int = 15
     lr: float = 1e-3
     weight_decay: float = 1e-4
     seed: int = 123
@@ -53,6 +53,18 @@ class TrainConfig:
     train_device: str = "cuda"   # 训练用
     infer_device: str = "cpu"    # 推理/评估/计时用
 
+    # Speed knobs
+    val_every: int = 1  # how often to run full validation (in epochs)
+    use_amp: bool = True  # enable autocast on CUDA
+    cudnn_benchmark: bool = True  # allow cuDNN autotune for speed (may reduce determinism)
+    pin_memory: bool = True  # pin loader batches for faster H2D copies
+    prefetch_factor: int = 4  # DataLoader prefetch when num_workers>0
+    persistent_workers: bool = True  # keep workers alive between epochs when num_workers>0
+    non_blocking: bool = True  # use non_blocking transfers when possible
+
+    # Early stopping
+    early_stop_patience: int = 5
+    early_stop_min_delta: float = 0.0
 
 
 @dataclass

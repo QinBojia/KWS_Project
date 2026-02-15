@@ -30,6 +30,7 @@ def fuse_for_quant(model: nn.Module) -> nn.Module:
     注意：因为我们的模型里 Conv/BN/ReLU 在 Sequential 里面，
     PyTorch 可以按模块路径 fuse。
     """
+    model.eval()  # fusion requires eval mode
     # stem: Conv2d, BN, ReLU
     torch.ao.quantization.fuse_modules(model.stem, ["0", "1", "2"], inplace=True)
 
@@ -51,37 +52,41 @@ def ptq_int8_static(
     calibration_batches: int = 30,
 ) -> nn.Module:
     """
-    INT8 静态后训练量化（PTQ）
-    - 一般在 CPU 上做（fbgemm 后端）
-    - calibration：用一小部分训练数据跑一遍，收集激活范围
+    INT8 静态 PTQ（FX Graph Mode），适合 only onednn 的环境。
+    - 会生成量化后的 FX GraphModule（更可能真正落地）
     """
-    # 量化通常在 CPU 上进行
+    import torch.ao.quantization.quantize_fx as qfx
+
+    # 你环境只有 onednn
     torch.backends.quantized.engine = "onednn"
 
     float_model = float_model.to("cpu").eval()
-    float_model = fuse_for_quant(float_model)
 
-    qmodel = QuantizableWrapper(float_model)
-    qmodel.eval()
+    # FX 量化配置
+    qconfig = torch.ao.quantization.get_default_qconfig("onednn")
+    qconfig_mapping = torch.ao.quantization.QConfigMapping().set_global(qconfig)
 
-    # 选择量化配置（默认就够用）
-    qmodel.qconfig = torch.ao.quantization.get_default_qconfig("onednn")
+    # FX trace 需要示例输入
+    example_x, _ = next(iter(calibration_loader))
+    example_x = example_x[:1].to("cpu")
 
-    # 准备：插入观测器
-    torch.ao.quantization.prepare(qmodel, inplace=True)
+    # 1) 插 observer（prepare_fx）
+    prepared = qfx.prepare_fx(float_model, qconfig_mapping, example_inputs=(example_x,))
 
-    # calibration：跑几批数据
+    # 2) 校准：跑若干批
     n = 0
     for x, _ in calibration_loader:
         x = x.to("cpu")
-        _ = qmodel(x)
+        _ = prepared(x)
         n += 1
         if n >= calibration_batches:
             break
 
-    # 转换：把观测器替换成真正 int8 算子
-    torch.ao.quantization.convert(qmodel, inplace=True)
-    return qmodel
+    # 3) convert_fx：转成量化图
+    quantized = qfx.convert_fx(prepared)
+    quantized.eval()
+    return quantized
+
 
 
 def fp16_cast(model: nn.Module) -> nn.Module:
