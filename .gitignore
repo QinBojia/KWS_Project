@@ -1,1 +1,24 @@
 /dataset/
+/data/
+/cache_mfcc/
+/__pycache__/
+/.claude/
+/.venv/
+nul
+
+# Intermediate experiment outputs (final results in outputs_custom/)
+/outputs/
+/outputs_grid/
+/outputs_small/
+/outputs_depth_only/
+/outputs_deploy/
+
+# Model weight files (too large for git)
+*.pth
+
+# STM32 build artifacts
+deploy/*/Debug/
+*.o
+*.elf
+*.list
+*.map

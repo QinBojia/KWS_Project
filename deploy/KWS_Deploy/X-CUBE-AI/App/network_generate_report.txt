@@ -1,0 +1,553 @@
+ST Edge AI Core v2.2.0-20266 2adc00962
+Created date          : 2026-02-16 03:46:30
+Parameters            : generate --target stm32f4 --name network -m C:/Users/m1339/PycharmProjects/KWS_Project/outputs_deploy/w025/model_float_opset13_cubeai.onnx --compression none --verbosity 1 --workspace C:/Users/m1339/AppData/Local/Temp/mxAI_workspace157165600923008869745229765190523 --output C:/Users/m1339/.stm32cubemx/network_output
+
+Exec/report summary (generate)
+------------------------------------------------------------------------------------------------------------------------
+model file         :   C:\Users\m1339\PycharmProjects\KWS_Project\outputs_deploy\w025\model_float_opset13_cubeai.onnx   
+type               :   onnx                                                                                             
+c_name             :   network                                                                                          
+compression        :   none                                                                                             
+options            :   allocate-inputs, allocate-outputs                                                                
+optimization       :   balanced                                                                                         
+target/series      :   stm32f4                                                                                          
+workspace dir      :   C:\Users\m1339\AppData\Local\Temp\mxAI_workspace157165600923008869745229765190523                
+output dir         :   C:\Users\m1339\.stm32cubemx\network_output                                                       
+model_fmt          :   float                                                                                            
+model_name         :   model_float_opset13_cubeai                                                                       
+model_hash         :   0x3d9a7886399bd4629cfdabacb28c575e                                                               
+params #           :   55,344 items (216.19 KiB)                                                                        
+------------------------------------------------------------------------------------------------------------------------
+input 1/1          :   'mfcc', f32(1x62x13x1), 3.15 KBytes, activations                                                 
+output 1/1         :   'logits', f32(1x8), 32 Bytes, activations                                                        
+macc               :   1,998,616                                                                                        
+weights (ro)       :   221,376 B (216.19 KiB) (1 segment)                                                               
+activations (rw)   :   53,376 B (52.12 KiB) (1 segment) *                                                               
+ram (total)        :   53,376 B (52.12 KiB) = 53,376 + 0 + 0                                                            
+------------------------------------------------------------------------------------------------------------------------
+(*) 'input'/'output' buffers are allocated in the activations buffer
+
+Model name - model_float_opset13_cubeai
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+m_id   layer (type,original)                                      oshape                 param/size           macc                     connected to   | c_size         c_macc            c_type              
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+41     fc_weight (Placeholder, Gemm)                              [b:8,c:128]            1,024/4,096                                                  | +32(+0.8%)     +1,032(+100.0%)   Dense_[o][39]       
+       fc_bias (Placeholder, Gemm)                                [b:8]                  8/32                                                         | -32(-100.0%)                     
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+0      mfcc (Input, )                                             [b:1,h:62,w:13,c:1]                                                                 |                                  
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+1      _stem_stem_0_Conv_output_0 (Conv2D, Conv)                  [b:1,h:62,w:13,c:8]    80/320             58,040                             mfcc   |                                  Conv2D_[0]          
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+2      _stem_stem_2_Relu_output_0 (Nonlinearity, Relu)            [b:1,h:62,w:13,c:8]                        6,448       _stem_stem_0_Conv_output_0   |                                  Nonlinearity_[1]    
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+3      _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:62,w:13,c:8]    80/320             58,040       _stem_stem_2_Relu_output_0   |                                  Conv2D_[2]          
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+4      _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:62,w:13,c:8]                        6,448   _features_features..v_output_0   |                                  Nonlinearity_[3]    
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+5      _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:62,w:13,c:8]    72/288             51,592   _features_features..u_output_0   |                                  Conv2D_[4]          
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+6      _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:62,w:13,c:8]                        6,448   _features_features..v_output_0   |                                  Nonlinearity_[5]    
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+7      _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:62,w:13,c:8]    80/320             58,040   _features_features..u_output_0   |                                  Conv2D_[6]          
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+8      _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:62,w:13,c:8]                        6,448   _features_features..v_output_0   |                                  Nonlinearity_[7]    
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+9      _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:62,w:13,c:16]   144/576           103,184   _features_features..u_output_0   |                                  Conv2D_[8]          
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+10     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:62,w:13,c:16]                      12,896   _features_features..v_output_0   |                                  Nonlinearity_[9]    
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+11     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:31,w:7,c:16]    160/640            31,264   _features_features..u_output_0   |                                  Conv2D_[10]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+12     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:31,w:7,c:16]                        3,472   _features_features..v_output_0   |                                  Nonlinearity_[11]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+13     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:31,w:7,c:32]    544/2,176         111,136   _features_features..u_output_0   |                                  Conv2D_[12]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+14     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:31,w:7,c:32]                        6,944   _features_features..v_output_0   |                                  Nonlinearity_[13]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+15     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:31,w:7,c:32]    320/1,280          62,528   _features_features..u_output_0   |                                  Conv2D_[14]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+16     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:31,w:7,c:32]                        6,944   _features_features..v_output_0   |                                  Nonlinearity_[15]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+17     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:31,w:7,c:32]    1,056/4,224       222,240   _features_features..u_output_0   |                                  Conv2D_[16]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+18     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:31,w:7,c:32]                        6,944   _features_features..v_output_0   |                                  Nonlinearity_[17]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+19     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:16,w:4,c:32]    320/1,280          18,464   _features_features..u_output_0   |                                  Conv2D_[18]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+20     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:16,w:4,c:32]                        2,048   _features_features..v_output_0   |                                  Nonlinearity_[19]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+21     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:16,w:4,c:64]    2,112/8,448       131,136   _features_features..u_output_0   |                                  Conv2D_[20]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+22     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:16,w:4,c:64]                        4,096   _features_features..v_output_0   |                                  Nonlinearity_[21]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+23     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:16,w:4,c:64]    640/2,560          36,928   _features_features..u_output_0   |                                  Conv2D_[22]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+24     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:16,w:4,c:64]                        4,096   _features_features..v_output_0   |                                  Nonlinearity_[23]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+25     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:16,w:4,c:64]    4,160/16,640      262,208   _features_features..u_output_0   |                                  Conv2D_[24]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+26     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:16,w:4,c:64]                        4,096   _features_features..v_output_0   |                                  Nonlinearity_[25]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+27     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:8,w:2,c:64]     640/2,560           9,280   _features_features..u_output_0   |                                  Conv2D_[26]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+28     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:8,w:2,c:64]                         1,024   _features_features..v_output_0   |                                  Nonlinearity_[27]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+29     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:8,w:2,c:128]    8,320/33,280      131,200   _features_features..u_output_0   |                                  Conv2D_[28]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+30     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:8,w:2,c:128]                        2,048   _features_features..v_output_0   |                                  Nonlinearity_[29]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+31     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:8,w:2,c:128]    1,280/5,120        18,560   _features_features..u_output_0   |                                  Conv2D_[30]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+32     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:8,w:2,c:128]                        2,048   _features_features..v_output_0   |                                  Nonlinearity_[31]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+33     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:8,w:2,c:128]    16,512/66,048     262,272   _features_features..u_output_0   |                                  Conv2D_[32]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+34     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:8,w:2,c:128]                        2,048   _features_features..v_output_0   |                                  Nonlinearity_[33]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+35     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:8,w:2,c:128]    1,280/5,120        18,560   _features_features..u_output_0   |                                  Conv2D_[34]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+36     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:8,w:2,c:128]                        2,048   _features_features..v_output_0   |                                  Nonlinearity_[35]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+37     _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:8,w:2,c:128]    16,512/66,048     262,272   _features_features..u_output_0   |                                  Conv2D_[36]         
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+38     _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:8,w:2,c:128]                        2,048   _features_features..v_output_0   |                                  Nonlinearity_[37]   
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+39     _pool_GlobalAverag..l_output_0 (Pool, GlobalAveragePool)   [b:1,h:1,w:1,c:128]                        2,048   _features_features..u_output_0   |                                  Pool_[38]           
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+40     _Flatten_output_0 (Reshape, Flatten)                       [b:1,c:128]                                        _pool_GlobalAverag..l_output_0   |                                  
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+41     logits (Gemm, Gemm)                                        [b:1,c:8]                                  1,032                _Flatten_output_0   |                -1,032(-100.0%)   
+                                                                                                                                          fc_weight   | 
+                                                                                                                                            fc_bias   | 
+------ ---------------------------------------------------------- ---------------------- --------------- --------- -------------------------------- --- -------------- ----------------- ------------------- 
+model/c-model: macc=1,998,616/1,998,616  weights=221,376/221,376  activations=--/53,376 io=--/0
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : model_float_opset13_cubeai
+c-name                : network
+c-node #              : 40
+c-array #             : 91
+activations size      : 53376 (1 segment)
+weights size          : 221376 (1 segment)
+macc                  : 1998616
+inputs                : ['mfcc_output']
+outputs               : ['logits_output']
+
+C-Arrays (91)
+------ ----------------------------------------------------- ------------- ------------------------- ------------- --------- 
+c_id   name (*_array)                                        item/size     domain/mem-pool           c-type        comment   
+------ ----------------------------------------------------- ------------- ------------------------- ------------- --------- 
+0      _features_features_0_dw_dw_0_Conv_output_0_bias       8/32          weights/weights           const float             
+1      _features_features_0_dw_dw_0_Conv_output_0_output     6448/25792    activations/**default**   float                   
+2      _features_features_0_dw_dw_0_Conv_output_0_weights    72/288        weights/weights           const float             
+3      _features_features_0_dw_dw_2_Relu_output_0_output     6448/25792    activations/**default**   float                   
+4      _features_features_0_pw_pw_0_Conv_output_0_bias       8/32          weights/weights           const float             
+5      _features_features_0_pw_pw_0_Conv_output_0_output     6448/25792    activations/**default**   float                   
+6      _features_features_0_pw_pw_0_Conv_output_0_scratch0   8/32          activations/**default**   float                   
+7      _features_features_0_pw_pw_0_Conv_output_0_weights    64/256        weights/weights           const float             
+8      _features_features_0_pw_pw_2_Relu_output_0_output     6448/25792    activations/**default**   float                   
+9      _features_features_1_dw_dw_0_Conv_output_0_bias       8/32          weights/weights           const float             
+10     _features_features_1_dw_dw_0_Conv_output_0_output     6448/25792    activations/**default**   float                   
+11     _features_features_1_dw_dw_0_Conv_output_0_weights    72/288        weights/weights           const float             
+12     _features_features_1_dw_dw_2_Relu_output_0_output     6448/25792    activations/**default**   float                   
+13     _features_features_1_pw_pw_0_Conv_output_0_bias       16/64         weights/weights           const float             
+14     _features_features_1_pw_pw_0_Conv_output_0_output     12896/51584   activations/**default**   float                   
+15     _features_features_1_pw_pw_0_Conv_output_0_scratch0   8/32          activations/**default**   float                   
+16     _features_features_1_pw_pw_0_Conv_output_0_weights    128/512       weights/weights           const float             
+17     _features_features_1_pw_pw_2_Relu_output_0_output     12896/51584   activations/**default**   float                   
+18     _features_features_2_dw_dw_0_Conv_output_0_bias       16/64         weights/weights           const float             
+19     _features_features_2_dw_dw_0_Conv_output_0_output     3472/13888    activations/**default**   float                   
+20     _features_features_2_dw_dw_0_Conv_output_0_weights    144/576       weights/weights           const float             
+21     _features_features_2_dw_dw_2_Relu_output_0_output     3472/13888    activations/**default**   float                   
+22     _features_features_2_pw_pw_0_Conv_output_0_bias       32/128        weights/weights           const float             
+23     _features_features_2_pw_pw_0_Conv_output_0_output     6944/27776    activations/**default**   float                   
+24     _features_features_2_pw_pw_0_Conv_output_0_scratch0   16/64         activations/**default**   float                   
+25     _features_features_2_pw_pw_0_Conv_output_0_weights    512/2048      weights/weights           const float             
+26     _features_features_2_pw_pw_2_Relu_output_0_output     6944/27776    activations/**default**   float                   
+27     _features_features_3_dw_dw_0_Conv_output_0_bias       32/128        weights/weights           const float             
+28     _features_features_3_dw_dw_0_Conv_output_0_output     6944/27776    activations/**default**   float                   
+29     _features_features_3_dw_dw_0_Conv_output_0_weights    288/1152      weights/weights           const float             
+30     _features_features_3_dw_dw_2_Relu_output_0_output     6944/27776    activations/**default**   float                   
+31     _features_features_3_pw_pw_0_Conv_output_0_bias       32/128        weights/weights           const float             
+32     _features_features_3_pw_pw_0_Conv_output_0_output     6944/27776    activations/**default**   float                   
+33     _features_features_3_pw_pw_0_Conv_output_0_scratch0   32/128        activations/**default**   float                   
+34     _features_features_3_pw_pw_0_Conv_output_0_weights    1024/4096     weights/weights           const float             
+35     _features_features_3_pw_pw_2_Relu_output_0_output     6944/27776    activations/**default**   float                   
+36     _features_features_4_dw_dw_0_Conv_output_0_bias       32/128        weights/weights           const float             
+37     _features_features_4_dw_dw_0_Conv_output_0_output     2048/8192     activations/**default**   float                   
+38     _features_features_4_dw_dw_0_Conv_output_0_weights    288/1152      weights/weights           const float             
+39     _features_features_4_dw_dw_2_Relu_output_0_output     2048/8192     activations/**default**   float                   
+40     _features_features_4_pw_pw_0_Conv_output_0_bias       64/256        weights/weights           const float             
+41     _features_features_4_pw_pw_0_Conv_output_0_output     4096/16384    activations/**default**   float                   
+42     _features_features_4_pw_pw_0_Conv_output_0_scratch0   32/128        activations/**default**   float                   
+43     _features_features_4_pw_pw_0_Conv_output_0_weights    2048/8192     weights/weights           const float             
+44     _features_features_4_pw_pw_2_Relu_output_0_output     4096/16384    activations/**default**   float                   
+45     _features_features_5_dw_dw_0_Conv_output_0_bias       64/256        weights/weights           const float             
+46     _features_features_5_dw_dw_0_Conv_output_0_output     4096/16384    activations/**default**   float                   
+47     _features_features_5_dw_dw_0_Conv_output_0_weights    576/2304      weights/weights           const float             
+48     _features_features_5_dw_dw_2_Relu_output_0_output     4096/16384    activations/**default**   float                   
+49     _features_features_5_pw_pw_0_Conv_output_0_bias       64/256        weights/weights           const float             
+50     _features_features_5_pw_pw_0_Conv_output_0_output     4096/16384    activations/**default**   float                   
+51     _features_features_5_pw_pw_0_Conv_output_0_scratch0   64/256        activations/**default**   float                   
+52     _features_features_5_pw_pw_0_Conv_output_0_weights    4096/16384    weights/weights           const float             
+53     _features_features_5_pw_pw_2_Relu_output_0_output     4096/16384    activations/**default**   float                   
+54     _features_features_6_dw_dw_0_Conv_output_0_bias       64/256        weights/weights           const float             
+55     _features_features_6_dw_dw_0_Conv_output_0_output     1024/4096     activations/**default**   float                   
+56     _features_features_6_dw_dw_0_Conv_output_0_weights    576/2304      weights/weights           const float             
+57     _features_features_6_dw_dw_2_Relu_output_0_output     1024/4096     activations/**default**   float                   
+58     _features_features_6_pw_pw_0_Conv_output_0_bias       128/512       weights/weights           const float             
+59     _features_features_6_pw_pw_0_Conv_output_0_output     2048/8192     activations/**default**   float                   
+60     _features_features_6_pw_pw_0_Conv_output_0_scratch0   64/256        activations/**default**   float                   
+61     _features_features_6_pw_pw_0_Conv_output_0_weights    8192/32768    weights/weights           const float             
+62     _features_features_6_pw_pw_2_Relu_output_0_output     2048/8192     activations/**default**   float                   
+63     _features_features_7_dw_dw_0_Conv_output_0_bias       128/512       weights/weights           const float             
+64     _features_features_7_dw_dw_0_Conv_output_0_output     2048/8192     activations/**default**   float                   
+65     _features_features_7_dw_dw_0_Conv_output_0_weights    1152/4608     weights/weights           const float             
+66     _features_features_7_dw_dw_2_Relu_output_0_output     2048/8192     activations/**default**   float                   
+67     _features_features_7_pw_pw_0_Conv_output_0_bias       128/512       weights/weights           const float             
+68     _features_features_7_pw_pw_0_Conv_output_0_output     2048/8192     activations/**default**   float                   
+69     _features_features_7_pw_pw_0_Conv_output_0_scratch0   128/512       activations/**default**   float                   
+70     _features_features_7_pw_pw_0_Conv_output_0_weights    16384/65536   weights/weights           const float             
+71     _features_features_7_pw_pw_2_Relu_output_0_output     2048/8192     activations/**default**   float                   
+72     _features_features_8_dw_dw_0_Conv_output_0_bias       128/512       weights/weights           const float             
+73     _features_features_8_dw_dw_0_Conv_output_0_output     2048/8192     activations/**default**   float                   
+74     _features_features_8_dw_dw_0_Conv_output_0_weights    1152/4608     weights/weights           const float             
+75     _features_features_8_dw_dw_2_Relu_output_0_output     2048/8192     activations/**default**   float                   
+76     _features_features_8_pw_pw_0_Conv_output_0_bias       128/512       weights/weights           const float             
+77     _features_features_8_pw_pw_0_Conv_output_0_output     2048/8192     activations/**default**   float                   
+78     _features_features_8_pw_pw_0_Conv_output_0_scratch0   128/512       activations/**default**   float                   
+79     _features_features_8_pw_pw_0_Conv_output_0_weights    16384/65536   weights/weights           const float             
+80     _features_features_8_pw_pw_2_Relu_output_0_output     2048/8192     activations/**default**   float                   
+81     _pool_GlobalAveragePool_output_0_output               128/512       activations/**default**   float                   
+82     _stem_stem_0_Conv_output_0_bias                       8/32          weights/weights           const float             
+83     _stem_stem_0_Conv_output_0_output                     6448/25792    activations/**default**   float                   
+84     _stem_stem_0_Conv_output_0_scratch0                   9/36          activations/**default**   float                   
+85     _stem_stem_0_Conv_output_0_weights                    72/288        weights/weights           const float             
+86     _stem_stem_2_Relu_output_0_output                     6448/25792    activations/**default**   float                   
+87     logits_bias                                           8/32          weights/weights           const float             
+88     logits_output                                         8/32          activations/**default**   float         /output   
+89     logits_weights                                        1024/4096     weights/weights           const float             
+90     mfcc_output                                           806/3224      activations/**default**   float         /input    
+------ ----------------------------------------------------- ------------- ------------------------- ------------- --------- 
+
+C-Layers (40)
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+c_id   name (*_layer)                               id   layer_type      macc     rom     tensors                                                  shape (array id)        
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+0      _stem_stem_0_Conv_output_0                   1    Conv2D          58040    320     I: mfcc_output                                           f32(1x62x13x1) (90)     
+                                                                                          S: _stem_stem_0_Conv_output_0_scratch0                                           
+                                                                                          W: _stem_stem_0_Conv_output_0_weights                    f32(8x3x3x1) (85)       
+                                                                                          W: _stem_stem_0_Conv_output_0_bias                       f32(8) (82)             
+                                                                                          O: _stem_stem_0_Conv_output_0_output                     f32(1x62x13x8) (83)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+1      _stem_stem_2_Relu_output_0                   2    Nonlinearity    6448     0       I: _stem_stem_0_Conv_output_0_output                     f32(1x62x13x8) (83)     
+                                                                                          O: _stem_stem_2_Relu_output_0_output                     f32(1x62x13x8) (86)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+2      _features_features_0_dw_dw_0_Conv_output_0   3    Conv2D          58040    320     I: _stem_stem_2_Relu_output_0_output                     f32(1x62x13x8) (86)     
+                                                                                          W: _features_features_0_dw_dw_0_Conv_output_0_weights    f32(8x3x3x1) (2)        
+                                                                                          W: _features_features_0_dw_dw_0_Conv_output_0_bias       f32(8) (0)              
+                                                                                          O: _features_features_0_dw_dw_0_Conv_output_0_output     f32(1x62x13x8) (1)      
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+3      _features_features_0_dw_dw_2_Relu_output_0   4    Nonlinearity    6448     0       I: _features_features_0_dw_dw_0_Conv_output_0_output     f32(1x62x13x8) (1)      
+                                                                                          O: _features_features_0_dw_dw_2_Relu_output_0_output     f32(1x62x13x8) (3)      
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+4      _features_features_0_pw_pw_0_Conv_output_0   5    Conv2D          51592    288     I: _features_features_0_dw_dw_2_Relu_output_0_output     f32(1x62x13x8) (3)      
+                                                                                          S: _features_features_0_pw_pw_0_Conv_output_0_scratch0                           
+                                                                                          W: _features_features_0_pw_pw_0_Conv_output_0_weights    f32(8x1x1x8) (7)        
+                                                                                          W: _features_features_0_pw_pw_0_Conv_output_0_bias       f32(8) (4)              
+                                                                                          O: _features_features_0_pw_pw_0_Conv_output_0_output     f32(1x62x13x8) (5)      
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+5      _features_features_0_pw_pw_2_Relu_output_0   6    Nonlinearity    6448     0       I: _features_features_0_pw_pw_0_Conv_output_0_output     f32(1x62x13x8) (5)      
+                                                                                          O: _features_features_0_pw_pw_2_Relu_output_0_output     f32(1x62x13x8) (8)      
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+6      _features_features_1_dw_dw_0_Conv_output_0   7    Conv2D          58040    320     I: _features_features_0_pw_pw_2_Relu_output_0_output     f32(1x62x13x8) (8)      
+                                                                                          W: _features_features_1_dw_dw_0_Conv_output_0_weights    f32(8x3x3x1) (11)       
+                                                                                          W: _features_features_1_dw_dw_0_Conv_output_0_bias       f32(8) (9)              
+                                                                                          O: _features_features_1_dw_dw_0_Conv_output_0_output     f32(1x62x13x8) (10)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+7      _features_features_1_dw_dw_2_Relu_output_0   8    Nonlinearity    6448     0       I: _features_features_1_dw_dw_0_Conv_output_0_output     f32(1x62x13x8) (10)     
+                                                                                          O: _features_features_1_dw_dw_2_Relu_output_0_output     f32(1x62x13x8) (12)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+8      _features_features_1_pw_pw_0_Conv_output_0   9    Conv2D          103184   576     I: _features_features_1_dw_dw_2_Relu_output_0_output     f32(1x62x13x8) (12)     
+                                                                                          S: _features_features_1_pw_pw_0_Conv_output_0_scratch0                           
+                                                                                          W: _features_features_1_pw_pw_0_Conv_output_0_weights    f32(16x1x1x8) (16)      
+                                                                                          W: _features_features_1_pw_pw_0_Conv_output_0_bias       f32(16) (13)            
+                                                                                          O: _features_features_1_pw_pw_0_Conv_output_0_output     f32(1x62x13x16) (14)    
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+9      _features_features_1_pw_pw_2_Relu_output_0   10   Nonlinearity    12896    0       I: _features_features_1_pw_pw_0_Conv_output_0_output     f32(1x62x13x16) (14)    
+                                                                                          O: _features_features_1_pw_pw_2_Relu_output_0_output     f32(1x62x13x16) (17)    
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+10     _features_features_2_dw_dw_0_Conv_output_0   11   Conv2D          31264    640     I: _features_features_1_pw_pw_2_Relu_output_0_output     f32(1x62x13x16) (17)    
+                                                                                          W: _features_features_2_dw_dw_0_Conv_output_0_weights    f32(16x3x3x1) (20)      
+                                                                                          W: _features_features_2_dw_dw_0_Conv_output_0_bias       f32(16) (18)            
+                                                                                          O: _features_features_2_dw_dw_0_Conv_output_0_output     f32(1x31x7x16) (19)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+11     _features_features_2_dw_dw_2_Relu_output_0   12   Nonlinearity    3472     0       I: _features_features_2_dw_dw_0_Conv_output_0_output     f32(1x31x7x16) (19)     
+                                                                                          O: _features_features_2_dw_dw_2_Relu_output_0_output     f32(1x31x7x16) (21)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+12     _features_features_2_pw_pw_0_Conv_output_0   13   Conv2D          111136   2176    I: _features_features_2_dw_dw_2_Relu_output_0_output     f32(1x31x7x16) (21)     
+                                                                                          S: _features_features_2_pw_pw_0_Conv_output_0_scratch0                           
+                                                                                          W: _features_features_2_pw_pw_0_Conv_output_0_weights    f32(32x1x1x16) (25)     
+                                                                                          W: _features_features_2_pw_pw_0_Conv_output_0_bias       f32(32) (22)            
+                                                                                          O: _features_features_2_pw_pw_0_Conv_output_0_output     f32(1x31x7x32) (23)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+13     _features_features_2_pw_pw_2_Relu_output_0   14   Nonlinearity    6944     0       I: _features_features_2_pw_pw_0_Conv_output_0_output     f32(1x31x7x32) (23)     
+                                                                                          O: _features_features_2_pw_pw_2_Relu_output_0_output     f32(1x31x7x32) (26)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+14     _features_features_3_dw_dw_0_Conv_output_0   15   Conv2D          62528    1280    I: _features_features_2_pw_pw_2_Relu_output_0_output     f32(1x31x7x32) (26)     
+                                                                                          W: _features_features_3_dw_dw_0_Conv_output_0_weights    f32(32x3x3x1) (29)      
+                                                                                          W: _features_features_3_dw_dw_0_Conv_output_0_bias       f32(32) (27)            
+                                                                                          O: _features_features_3_dw_dw_0_Conv_output_0_output     f32(1x31x7x32) (28)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+15     _features_features_3_dw_dw_2_Relu_output_0   16   Nonlinearity    6944     0       I: _features_features_3_dw_dw_0_Conv_output_0_output     f32(1x31x7x32) (28)     
+                                                                                          O: _features_features_3_dw_dw_2_Relu_output_0_output     f32(1x31x7x32) (30)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+16     _features_features_3_pw_pw_0_Conv_output_0   17   Conv2D          222240   4224    I: _features_features_3_dw_dw_2_Relu_output_0_output     f32(1x31x7x32) (30)     
+                                                                                          S: _features_features_3_pw_pw_0_Conv_output_0_scratch0                           
+                                                                                          W: _features_features_3_pw_pw_0_Conv_output_0_weights    f32(32x1x1x32) (34)     
+                                                                                          W: _features_features_3_pw_pw_0_Conv_output_0_bias       f32(32) (31)            
+                                                                                          O: _features_features_3_pw_pw_0_Conv_output_0_output     f32(1x31x7x32) (32)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+17     _features_features_3_pw_pw_2_Relu_output_0   18   Nonlinearity    6944     0       I: _features_features_3_pw_pw_0_Conv_output_0_output     f32(1x31x7x32) (32)     
+                                                                                          O: _features_features_3_pw_pw_2_Relu_output_0_output     f32(1x31x7x32) (35)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+18     _features_features_4_dw_dw_0_Conv_output_0   19   Conv2D          18464    1280    I: _features_features_3_pw_pw_2_Relu_output_0_output     f32(1x31x7x32) (35)     
+                                                                                          W: _features_features_4_dw_dw_0_Conv_output_0_weights    f32(32x3x3x1) (38)      
+                                                                                          W: _features_features_4_dw_dw_0_Conv_output_0_bias       f32(32) (36)            
+                                                                                          O: _features_features_4_dw_dw_0_Conv_output_0_output     f32(1x16x4x32) (37)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+19     _features_features_4_dw_dw_2_Relu_output_0   20   Nonlinearity    2048     0       I: _features_features_4_dw_dw_0_Conv_output_0_output     f32(1x16x4x32) (37)     
+                                                                                          O: _features_features_4_dw_dw_2_Relu_output_0_output     f32(1x16x4x32) (39)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+20     _features_features_4_pw_pw_0_Conv_output_0   21   Conv2D          131136   8448    I: _features_features_4_dw_dw_2_Relu_output_0_output     f32(1x16x4x32) (39)     
+                                                                                          S: _features_features_4_pw_pw_0_Conv_output_0_scratch0                           
+                                                                                          W: _features_features_4_pw_pw_0_Conv_output_0_weights    f32(64x1x1x32) (43)     
+                                                                                          W: _features_features_4_pw_pw_0_Conv_output_0_bias       f32(64) (40)            
+                                                                                          O: _features_features_4_pw_pw_0_Conv_output_0_output     f32(1x16x4x64) (41)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+21     _features_features_4_pw_pw_2_Relu_output_0   22   Nonlinearity    4096     0       I: _features_features_4_pw_pw_0_Conv_output_0_output     f32(1x16x4x64) (41)     
+                                                                                          O: _features_features_4_pw_pw_2_Relu_output_0_output     f32(1x16x4x64) (44)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+22     _features_features_5_dw_dw_0_Conv_output_0   23   Conv2D          36928    2560    I: _features_features_4_pw_pw_2_Relu_output_0_output     f32(1x16x4x64) (44)     
+                                                                                          W: _features_features_5_dw_dw_0_Conv_output_0_weights    f32(64x3x3x1) (47)      
+                                                                                          W: _features_features_5_dw_dw_0_Conv_output_0_bias       f32(64) (45)            
+                                                                                          O: _features_features_5_dw_dw_0_Conv_output_0_output     f32(1x16x4x64) (46)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+23     _features_features_5_dw_dw_2_Relu_output_0   24   Nonlinearity    4096     0       I: _features_features_5_dw_dw_0_Conv_output_0_output     f32(1x16x4x64) (46)     
+                                                                                          O: _features_features_5_dw_dw_2_Relu_output_0_output     f32(1x16x4x64) (48)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+24     _features_features_5_pw_pw_0_Conv_output_0   25   Conv2D          262208   16640   I: _features_features_5_dw_dw_2_Relu_output_0_output     f32(1x16x4x64) (48)     
+                                                                                          S: _features_features_5_pw_pw_0_Conv_output_0_scratch0                           
+                                                                                          W: _features_features_5_pw_pw_0_Conv_output_0_weights    f32(64x1x1x64) (52)     
+                                                                                          W: _features_features_5_pw_pw_0_Conv_output_0_bias       f32(64) (49)            
+                                                                                          O: _features_features_5_pw_pw_0_Conv_output_0_output     f32(1x16x4x64) (50)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+25     _features_features_5_pw_pw_2_Relu_output_0   26   Nonlinearity    4096     0       I: _features_features_5_pw_pw_0_Conv_output_0_output     f32(1x16x4x64) (50)     
+                                                                                          O: _features_features_5_pw_pw_2_Relu_output_0_output     f32(1x16x4x64) (53)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+26     _features_features_6_dw_dw_0_Conv_output_0   27   Conv2D          9280     2560    I: _features_features_5_pw_pw_2_Relu_output_0_output     f32(1x16x4x64) (53)     
+                                                                                          W: _features_features_6_dw_dw_0_Conv_output_0_weights    f32(64x3x3x1) (56)      
+                                                                                          W: _features_features_6_dw_dw_0_Conv_output_0_bias       f32(64) (54)            
+                                                                                          O: _features_features_6_dw_dw_0_Conv_output_0_output     f32(1x8x2x64) (55)      
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+27     _features_features_6_dw_dw_2_Relu_output_0   28   Nonlinearity    1024     0       I: _features_features_6_dw_dw_0_Conv_output_0_output     f32(1x8x2x64) (55)      
+                                                                                          O: _features_features_6_dw_dw_2_Relu_output_0_output     f32(1x8x2x64) (57)      
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+28     _features_features_6_pw_pw_0_Conv_output_0   29   Conv2D          131200   33280   I: _features_features_6_dw_dw_2_Relu_output_0_output     f32(1x8x2x64) (57)      
+                                                                                          S: _features_features_6_pw_pw_0_Conv_output_0_scratch0                           
+                                                                                          W: _features_features_6_pw_pw_0_Conv_output_0_weights    f32(128x1x1x64) (61)    
+                                                                                          W: _features_features_6_pw_pw_0_Conv_output_0_bias       f32(128) (58)           
+                                                                                          O: _features_features_6_pw_pw_0_Conv_output_0_output     f32(1x8x2x128) (59)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+29     _features_features_6_pw_pw_2_Relu_output_0   30   Nonlinearity    2048     0       I: _features_features_6_pw_pw_0_Conv_output_0_output     f32(1x8x2x128) (59)     
+                                                                                          O: _features_features_6_pw_pw_2_Relu_output_0_output     f32(1x8x2x128) (62)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+30     _features_features_7_dw_dw_0_Conv_output_0   31   Conv2D          18560    5120    I: _features_features_6_pw_pw_2_Relu_output_0_output     f32(1x8x2x128) (62)     
+                                                                                          W: _features_features_7_dw_dw_0_Conv_output_0_weights    f32(128x3x3x1) (65)     
+                                                                                          W: _features_features_7_dw_dw_0_Conv_output_0_bias       f32(128) (63)           
+                                                                                          O: _features_features_7_dw_dw_0_Conv_output_0_output     f32(1x8x2x128) (64)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+31     _features_features_7_dw_dw_2_Relu_output_0   32   Nonlinearity    2048     0       I: _features_features_7_dw_dw_0_Conv_output_0_output     f32(1x8x2x128) (64)     
+                                                                                          O: _features_features_7_dw_dw_2_Relu_output_0_output     f32(1x8x2x128) (66)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+32     _features_features_7_pw_pw_0_Conv_output_0   33   Conv2D          262272   66048   I: _features_features_7_dw_dw_2_Relu_output_0_output     f32(1x8x2x128) (66)     
+                                                                                          S: _features_features_7_pw_pw_0_Conv_output_0_scratch0                           
+                                                                                          W: _features_features_7_pw_pw_0_Conv_output_0_weights    f32(128x1x1x128) (70)   
+                                                                                          W: _features_features_7_pw_pw_0_Conv_output_0_bias       f32(128) (67)           
+                                                                                          O: _features_features_7_pw_pw_0_Conv_output_0_output     f32(1x8x2x128) (68)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+33     _features_features_7_pw_pw_2_Relu_output_0   34   Nonlinearity    2048     0       I: _features_features_7_pw_pw_0_Conv_output_0_output     f32(1x8x2x128) (68)     
+                                                                                          O: _features_features_7_pw_pw_2_Relu_output_0_output     f32(1x8x2x128) (71)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+34     _features_features_8_dw_dw_0_Conv_output_0   35   Conv2D          18560    5120    I: _features_features_7_pw_pw_2_Relu_output_0_output     f32(1x8x2x128) (71)     
+                                                                                          W: _features_features_8_dw_dw_0_Conv_output_0_weights    f32(128x3x3x1) (74)     
+                                                                                          W: _features_features_8_dw_dw_0_Conv_output_0_bias       f32(128) (72)           
+                                                                                          O: _features_features_8_dw_dw_0_Conv_output_0_output     f32(1x8x2x128) (73)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+35     _features_features_8_dw_dw_2_Relu_output_0   36   Nonlinearity    2048     0       I: _features_features_8_dw_dw_0_Conv_output_0_output     f32(1x8x2x128) (73)     
+                                                                                          O: _features_features_8_dw_dw_2_Relu_output_0_output     f32(1x8x2x128) (75)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+36     _features_features_8_pw_pw_0_Conv_output_0   37   Conv2D          262272   66048   I: _features_features_8_dw_dw_2_Relu_output_0_output     f32(1x8x2x128) (75)     
+                                                                                          S: _features_features_8_pw_pw_0_Conv_output_0_scratch0                           
+                                                                                          W: _features_features_8_pw_pw_0_Conv_output_0_weights    f32(128x1x1x128) (79)   
+                                                                                          W: _features_features_8_pw_pw_0_Conv_output_0_bias       f32(128) (76)           
+                                                                                          O: _features_features_8_pw_pw_0_Conv_output_0_output     f32(1x8x2x128) (77)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+37     _features_features_8_pw_pw_2_Relu_output_0   38   Nonlinearity    2048     0       I: _features_features_8_pw_pw_0_Conv_output_0_output     f32(1x8x2x128) (77)     
+                                                                                          O: _features_features_8_pw_pw_2_Relu_output_0_output     f32(1x8x2x128) (80)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+38     _pool_GlobalAveragePool_output_0             39   Pool            2048     0       I: _features_features_8_pw_pw_2_Relu_output_0_output     f32(1x8x2x128) (80)     
+                                                                                          O: _pool_GlobalAveragePool_output_0_output               f32(1x1x1x128) (81)     
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+39     logits                                       41   Dense           1032     4128    I: _pool_GlobalAveragePool_output_0_output               f32(1x1x1x128) (81)     
+                                                                                          W: logits_weights                                        f32(8x128) (89)         
+                                                                                          W: logits_bias                                           f32(8) (87)             
+                                                                                          O: logits_output                                         f32(1x8) (88)           
+------ -------------------------------------------- ---- --------------- -------- ------- -------------------------------------------------------- ----------------------- 
+
+
+
+Number of operations per c-layer
+------- ------ ----------------------------------------------- ----------- -------------- 
+c_id    m_id   name (type)                                             #op           type 
+------- ------ ----------------------------------------------- ----------- -------------- 
+0       1      _stem_stem_0_Conv_output_0 (Conv2D)                  58,040   smul_f32_f32 
+1       2      _stem_stem_2_Relu_output_0 (Nonlinearity)             6,448     op_f32_f32 
+2       3      _features_features..v_output_0 (Conv2D)              58,040   smul_f32_f32 
+3       4      _features_features..u_output_0 (Nonlinearity)         6,448     op_f32_f32 
+4       5      _features_features..v_output_0 (Conv2D)              51,592   smul_f32_f32 
+5       6      _features_features..u_output_0 (Nonlinearity)         6,448     op_f32_f32 
+6       7      _features_features..v_output_0 (Conv2D)              58,040   smul_f32_f32 
+7       8      _features_features..u_output_0 (Nonlinearity)         6,448     op_f32_f32 
+8       9      _features_features..v_output_0 (Conv2D)             103,184   smul_f32_f32 
+9       10     _features_features..u_output_0 (Nonlinearity)        12,896     op_f32_f32 
+10      11     _features_features..v_output_0 (Conv2D)              31,264   smul_f32_f32 
+11      12     _features_features..u_output_0 (Nonlinearity)         3,472     op_f32_f32 
+12      13     _features_features..v_output_0 (Conv2D)             111,136   smul_f32_f32 
+13      14     _features_features..u_output_0 (Nonlinearity)         6,944     op_f32_f32 
+14      15     _features_features..v_output_0 (Conv2D)              62,528   smul_f32_f32 
+15      16     _features_features..u_output_0 (Nonlinearity)         6,944     op_f32_f32 
+16      17     _features_features..v_output_0 (Conv2D)             222,240   smul_f32_f32 
+17      18     _features_features..u_output_0 (Nonlinearity)         6,944     op_f32_f32 
+18      19     _features_features..v_output_0 (Conv2D)              18,464   smul_f32_f32 
+19      20     _features_features..u_output_0 (Nonlinearity)         2,048     op_f32_f32 
+20      21     _features_features..v_output_0 (Conv2D)             131,136   smul_f32_f32 
+21      22     _features_features..u_output_0 (Nonlinearity)         4,096     op_f32_f32 
+22      23     _features_features..v_output_0 (Conv2D)              36,928   smul_f32_f32 
+23      24     _features_features..u_output_0 (Nonlinearity)         4,096     op_f32_f32 
+24      25     _features_features..v_output_0 (Conv2D)             262,208   smul_f32_f32 
+25      26     _features_features..u_output_0 (Nonlinearity)         4,096     op_f32_f32 
+26      27     _features_features..v_output_0 (Conv2D)               9,280   smul_f32_f32 
+27      28     _features_features..u_output_0 (Nonlinearity)         1,024     op_f32_f32 
+28      29     _features_features..v_output_0 (Conv2D)             131,200   smul_f32_f32 
+29      30     _features_features..u_output_0 (Nonlinearity)         2,048     op_f32_f32 
+30      31     _features_features..v_output_0 (Conv2D)              18,560   smul_f32_f32 
+31      32     _features_features..u_output_0 (Nonlinearity)         2,048     op_f32_f32 
+32      33     _features_features..v_output_0 (Conv2D)             262,272   smul_f32_f32 
+33      34     _features_features..u_output_0 (Nonlinearity)         2,048     op_f32_f32 
+34      35     _features_features..v_output_0 (Conv2D)              18,560   smul_f32_f32 
+35      36     _features_features..u_output_0 (Nonlinearity)         2,048     op_f32_f32 
+36      37     _features_features..v_output_0 (Conv2D)             262,272   smul_f32_f32 
+37      38     _features_features..u_output_0 (Nonlinearity)         2,048     op_f32_f32 
+38      39     _pool_GlobalAverag..l_output_0 (Pool)                 2,048   smul_f32_f32 
+39      41     logits (Dense)                                        1,032   smul_f32_f32 
+------- ------ ----------------------------------------------- ----------- -------------- 
+total                                                            1,998,616 
+
+Number of operation types
+---------------- ----------- ----------- 
+operation type             #           % 
+---------------- ----------- ----------- 
+smul_f32_f32       1,910,024       95.6% 
+op_f32_f32            88,592        4.4% 
+
+Complexity report (model)
+------ ------------------------------------------ ------------------------- ------------------------- ------ 
+m_id   name                                       c_macc                    c_rom                     c_id   
+------ ------------------------------------------ ------------------------- ------------------------- ------ 
+41     fc_weight                                  |                  0.1%   |                  1.9%   [39]   
+1      _stem_stem_0_Conv_output_0                 ||||               2.9%   |                  0.1%   [0]    
+2      _stem_stem_2_Relu_output_0                 |                  0.3%   |                  0.0%   [1]    
+3      _features_features_0_dw_dw_0..v_output_0   ||||               2.9%   |                  0.1%   [2]    
+4      _features_features_0_dw_dw_2..u_output_0   |                  0.3%   |                  0.0%   [3]    
+5      _features_features_0_pw_pw_0..v_output_0   |||                2.6%   |                  0.1%   [4]    
+6      _features_features_0_pw_pw_2..u_output_0   |                  0.3%   |                  0.0%   [5]    
+7      _features_features_1_dw_dw_0..v_output_0   ||||               2.9%   |                  0.1%   [6]    
+8      _features_features_1_dw_dw_2..u_output_0   |                  0.3%   |                  0.0%   [7]    
+9      _features_features_1_pw_pw_0..v_output_0   ||||||             5.2%   |                  0.3%   [8]    
+10     _features_features_1_pw_pw_2..u_output_0   |                  0.6%   |                  0.0%   [9]    
+11     _features_features_2_dw_dw_0..v_output_0   ||                 1.6%   |                  0.3%   [10]   
+12     _features_features_2_dw_dw_2..u_output_0   |                  0.2%   |                  0.0%   [11]   
+13     _features_features_2_pw_pw_0..v_output_0   |||||||            5.6%   |                  1.0%   [12]   
+14     _features_features_2_pw_pw_2..u_output_0   |                  0.3%   |                  0.0%   [13]   
+15     _features_features_3_dw_dw_0..v_output_0   ||||               3.1%   |                  0.6%   [14]   
+16     _features_features_3_dw_dw_2..u_output_0   |                  0.3%   |                  0.0%   [15]   
+17     _features_features_3_pw_pw_0..v_output_0   |||||||||||||     11.1%   |                  1.9%   [16]   
+18     _features_features_3_pw_pw_2..u_output_0   |                  0.3%   |                  0.0%   [17]   
+19     _features_features_4_dw_dw_0..v_output_0   ||                 0.9%   |                  0.6%   [18]   
+20     _features_features_4_dw_dw_2..u_output_0   |                  0.1%   |                  0.0%   [19]   
+21     _features_features_4_pw_pw_0..v_output_0   ||||||||           6.6%   ||                 3.8%   [20]   
+22     _features_features_4_pw_pw_2..u_output_0   |                  0.2%   |                  0.0%   [21]   
+23     _features_features_5_dw_dw_0..v_output_0   |||                1.8%   |                  1.2%   [22]   
+24     _features_features_5_dw_dw_2..u_output_0   |                  0.2%   |                  0.0%   [23]   
+25     _features_features_5_pw_pw_0..v_output_0   |||||||||||||||   13.1%   ||||               7.5%   [24]   
+26     _features_features_5_pw_pw_2..u_output_0   |                  0.2%   |                  0.0%   [25]   
+27     _features_features_6_dw_dw_0..v_output_0   |                  0.5%   |                  1.2%   [26]   
+28     _features_features_6_dw_dw_2..u_output_0   |                  0.1%   |                  0.0%   [27]   
+29     _features_features_6_pw_pw_0..v_output_0   ||||||||           6.6%   ||||||||          15.0%   [28]   
+30     _features_features_6_pw_pw_2..u_output_0   |                  0.1%   |                  0.0%   [29]   
+31     _features_features_7_dw_dw_0..v_output_0   ||                 0.9%   ||                 2.3%   [30]   
+32     _features_features_7_dw_dw_2..u_output_0   |                  0.1%   |                  0.0%   [31]   
+33     _features_features_7_pw_pw_0..v_output_0   ||||||||||||||||  13.1%   ||||||||||||||||  29.8%   [32]   
+34     _features_features_7_pw_pw_2..u_output_0   |                  0.1%   |                  0.0%   [33]   
+35     _features_features_8_dw_dw_0..v_output_0   ||                 0.9%   ||                 2.3%   [34]   
+36     _features_features_8_dw_dw_2..u_output_0   |                  0.1%   |                  0.0%   [35]   
+37     _features_features_8_pw_pw_0..v_output_0   ||||||||||||||||  13.1%   ||||||||||||||||  29.8%   [36]   
+38     _features_features_8_pw_pw_2..u_output_0   |                  0.1%   |                  0.0%   [37]   
+39     _pool_GlobalAveragePool_output_0           |                  0.1%   |                  0.0%   [38]   
+------ ------------------------------------------ ------------------------- ------------------------- ------ 
+macc=1,998,616 weights=221,376 act=53,376 ram_io=0
+ 
+ Requested memory size by section - "stm32f4" target
+ ------------------------------ -------- --------- -------- -------- 
+ module                             text    rodata     data      bss 
+ ------------------------------ -------- --------- -------- -------- 
+ NetworkRuntime1020_CM4_GCC.a     10,488         0        0        0 
+ network.o                         1,868       320   11,836      472 
+ network_data.o                       48        16       88        0 
+ lib (toolchain)*                      0         0        0        0 
+ ------------------------------ -------- --------- -------- -------- 
+ RT total**                       12,404       336   11,924      472 
+ ------------------------------ -------- --------- -------- -------- 
+ weights                               0   221,376        0        0 
+ activations                           0         0        0   53,376 
+ io                                    0         0        0        0 
+ ------------------------------ -------- --------- -------- -------- 
+ TOTAL                            12,404   221,712   11,924   53,848 
+ ------------------------------ -------- --------- -------- -------- 
+ *  toolchain objects (libm/libgcc*)
+ ** RT AI runtime objects (kernels+infrastructure)
+  
+  Summary - "stm32f4" target
+  ---------------------------------------------------
+               FLASH (ro)      %*   RAM (rw)       % 
+  ---------------------------------------------------
+  RT total         24,664   10.0%     12,396   18.8% 
+  ---------------------------------------------------
+  TOTAL           246,040             65,772         
+  ---------------------------------------------------
+  *  rt/total
+
+
+Generated files (7)
+------------------------------------------------------------------ 
+C:\Users\m1339\.stm32cubemx\network_output\network_data_params.h   
+C:\Users\m1339\.stm32cubemx\network_output\network_data_params.c   
+C:\Users\m1339\.stm32cubemx\network_output\network_data.h          
+C:\Users\m1339\.stm32cubemx\network_output\network_data.c          
+C:\Users\m1339\.stm32cubemx\network_output\network_config.h        
+C:\Users\m1339\.stm32cubemx\network_output\network.h               
+C:\Users\m1339\.stm32cubemx\network_output\network.c               

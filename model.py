@@ -101,3 +101,47 @@ class MobileNetStyleKWS(nn.Module):
         x = x.flatten(1)
         x = self.drop(x)
         return self.fc(x)
+
+
+class CustomDSCNN(nn.Module):
+    """
+    Flexible DS-CNN with explicit per-block channel/stride config.
+    Allows arbitrary architectures to target specific MACC budgets.
+
+    Args:
+        stem_ch: Number of output channels for the stem conv.
+        stem_stride: Stride for the stem conv.
+        block_cfg: List of (out_channels, stride) for each DS block.
+        num_classes: Number of output classes.
+        dropout: Dropout probability before FC.
+    """
+
+    def __init__(self, stem_ch: int, stem_stride: int,
+                 block_cfg: list, num_classes: int = 8,
+                 dropout: float = 0.1):
+        super().__init__()
+
+        self.stem = nn.Sequential(
+            nn.Conv2d(1, stem_ch, 3, stride=stem_stride, padding=1, bias=False),
+            nn.BatchNorm2d(stem_ch),
+            nn.ReLU(inplace=True),
+        )
+
+        blocks = []
+        in_ch = stem_ch
+        for out_ch, stride in block_cfg:
+            blocks.append(DSConvBlock(in_ch, out_ch, stride=stride))
+            in_ch = out_ch
+        self.features = nn.Sequential(*blocks)
+
+        self.pool = nn.AdaptiveAvgPool2d((1, 1))
+        self.drop = nn.Dropout(p=dropout)
+        self.fc = nn.Linear(in_ch, num_classes)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.stem(x)
+        x = self.features(x)
+        x = self.pool(x)
+        x = x.flatten(1)
+        x = self.drop(x)
+        return self.fc(x)
