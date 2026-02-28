@@ -5,7 +5,7 @@ import os
 import re
 
 import torch
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader, Dataset, TensorDataset
 
 try:
     import torchaudio
@@ -156,15 +156,144 @@ class SpeechCommandsMFCC12(Dataset):
         return x, y
 
 
+def _preload_dataset(ds: SpeechCommandsMFCC12, device: str = "cpu") -> TensorDataset:
+    """Preload entire dataset into a single tensor pair in RAM/VRAM.
+
+    For KWS with MFCC 62x13, total memory is ~300MB — trivially fits in RAM or GPU.
+    Eliminates all per-sample I/O during training.
+    """
+    from tqdm import tqdm
+    n = len(ds)
+    # Probe shape from first sample
+    x0, _ = ds[0]
+    shape = x0.shape  # (1, 62, 13)
+
+    all_x = torch.empty(n, *shape, dtype=torch.float32)
+    all_y = torch.empty(n, dtype=torch.long)
+
+    for i in tqdm(range(n), desc=f"Preloading {ds.subset}", leave=False):
+        x, y = ds[i]
+        all_x[i] = x.to(torch.float32)
+        all_y[i] = y
+
+    if device != "cpu":
+        all_x = all_x.to(device)
+        all_y = all_y.to(device)
+
+    return TensorDataset(all_x, all_y)
+
+
+def _preload_monolithic_cache(
+    ds: SpeechCommandsMFCC12, device: str = "cpu"
+) -> TensorDataset:
+    """Preload dataset, using a monolithic .pt cache file for instant reload.
+
+    First call: iterates all samples, saves one .pt file (~300MB).
+    Subsequent calls: loads the single file in <1s.
+    """
+    cache_dir = ds.cache_dir or "./cache_mfcc"
+    os.makedirs(cache_dir, exist_ok=True)
+    mono_path = os.path.join(cache_dir, f"mono_{ds.subset}_{ds.cfg_sig}.pt")
+
+    if os.path.exists(mono_path):
+        print(f"  Loading monolithic cache: {mono_path}")
+        data = torch.load(mono_path, map_location="cpu", weights_only=True)
+        all_x = data["x"].to(torch.float32)
+        all_y = data["y"]
+    else:
+        print(f"  Building monolithic cache for {ds.subset}...")
+        from tqdm import tqdm
+        n = len(ds)
+        x0, _ = ds[0]
+        shape = x0.shape
+
+        all_x = torch.empty(n, *shape, dtype=torch.float32)
+        all_y = torch.empty(n, dtype=torch.long)
+
+        for i in tqdm(range(n), desc=f"Preloading {ds.subset}", leave=False):
+            x, y = ds[i]
+            all_x[i] = x.to(torch.float32)
+            all_y[i] = y
+
+        torch.save({"x": all_x.to(torch.float16), "y": all_y}, mono_path)
+        size_mb = os.path.getsize(mono_path) / (1024 * 1024)
+        print(f"  Saved monolithic cache: {mono_path} ({size_mb:.1f} MB)")
+
+    if device != "cpu":
+        all_x = all_x.to(device)
+        all_y = all_y.to(device)
+
+    return TensorDataset(all_x, all_y)
+
+
+class _ShuffledTensorDataLoader:
+    """Ultra-fast DataLoader for in-memory TensorDataset on GPU.
+
+    When data is already on GPU, standard DataLoader adds overhead from
+    multiprocessing, collation, and CPU→GPU transfer. This class directly
+    slices pre-loaded tensors with random indices — zero overhead.
+    """
+
+    def __init__(self, dataset: TensorDataset, batch_size: int, shuffle: bool = True,
+                 drop_last: bool = False):
+        self.x, self.y = dataset.tensors
+        self.batch_size = batch_size
+        self.shuffle = shuffle
+        self.drop_last = drop_last
+        self.n = len(self.x)
+
+    @property
+    def dataset(self):
+        return TensorDataset(self.x, self.y)
+
+    def __len__(self):
+        if self.drop_last:
+            return self.n // self.batch_size
+        return (self.n + self.batch_size - 1) // self.batch_size
+
+    def __iter__(self):
+        if self.shuffle:
+            idx = torch.randperm(self.n, device=self.x.device)
+            x = self.x[idx]
+            y = self.y[idx]
+        else:
+            x = self.x
+            y = self.y
+
+        for i in range(0, self.n, self.batch_size):
+            bx = x[i : i + self.batch_size]
+            by = y[i : i + self.batch_size]
+            if self.drop_last and bx.shape[0] < self.batch_size:
+                break
+            yield bx, by
+
+
 def make_loaders(audio_cfg: AudioConfig, batch_size: int, num_workers: int,
                  pin_memory: bool = True, prefetch_factor: int = 4, persistent_workers: bool = True,
-                 train_device: str = "cuda"):
+                 train_device: str = "cuda", preload: bool = True):
     cache_dir = "./cache_mfcc"
 
     train_ds = SpeechCommandsMFCC12("training", audio_cfg, silence_ratio=0.10, cache_dir=cache_dir, use_cache=True)
     val_ds = SpeechCommandsMFCC12("validation", audio_cfg, silence_ratio=0.10, cache_dir=cache_dir, use_cache=True)
     test_ds = SpeechCommandsMFCC12("testing", audio_cfg, silence_ratio=0.10, cache_dir=cache_dir, use_cache=True)
 
+    if preload:
+        # Preload all data into GPU memory — eliminates all I/O during training
+        preload_device = train_device if train_device.startswith("cuda") else "cpu"
+        print(f"Preloading datasets to {preload_device}...")
+
+        train_td = _preload_monolithic_cache(train_ds, device=preload_device)
+        val_td = _preload_monolithic_cache(val_ds, device=preload_device)
+        test_td = _preload_monolithic_cache(test_ds, device=preload_device)
+
+        # When data is on GPU, use ultra-fast tensor slicing instead of DataLoader
+        train_ld = _ShuffledTensorDataLoader(train_td, batch_size=batch_size, shuffle=True)
+        val_ld = _ShuffledTensorDataLoader(val_td, batch_size=batch_size, shuffle=False)
+        test_ld = _ShuffledTensorDataLoader(test_td, batch_size=batch_size, shuffle=False)
+
+        return train_ld, val_ld, test_ld
+
+    # Fallback: original DataLoader path
     pin = bool(pin_memory and train_device.startswith("cuda"))
     worker_kwargs = {}
     if num_workers > 0:

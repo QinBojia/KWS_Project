@@ -28,12 +28,15 @@ def parse_args():
     parser.add_argument("--onnx-opset", type=int, default=13)
     parser.add_argument("--calib-batches", type=int, default=30)
     parser.add_argument("--no-quantize", action="store_true")
+    parser.add_argument("--skip-train", action="store_true",
+                        help="Skip training, load existing weights")
 
     # Override training params
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--batch-size", type=int, default=None)
     parser.add_argument("--lr", type=float, default=None)
     parser.add_argument("--num-workers", type=int, default=None)
+    parser.add_argument("--seed", type=int, default=None)
     return parser.parse_args()
 
 

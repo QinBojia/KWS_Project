@@ -95,6 +95,7 @@ def run(exp: ExperimentConfig, out_dir: Path, args):
         prefetch_factor=exp.train.prefetch_factor,
         persistent_workers=exp.train.persistent_workers,
         train_device=device,
+        preload=True,
     )
 
     float_state_path = out_dir / "model_float.pth"
@@ -113,9 +114,11 @@ def run(exp: ExperimentConfig, out_dir: Path, args):
         torch.save(model.state_dict(), float_state_path)
         print(f"  Best val acc: {train_stats['best_val_acc']:.4f} (epoch {train_stats['best_epoch']})")
 
-    # Float evaluation
+    # Float evaluation — run on GPU if data is there, benchmark on CPU for deployment
     model.eval()
-    float_metrics = evaluate(model, test_ld, device="cpu")
+    model = model.to(device)
+    float_metrics = evaluate(model, test_ld, device=device)
+    model = model.to("cpu")
     example_x = next(iter(val_ld))[0][:1].to("cpu")
     float_ms = benchmark_inference_ms(model, example_x, device="cpu")
     print(f"  Float test acc: {float_metrics['acc']:.4f}  latency: {float_ms:.2f}ms")
