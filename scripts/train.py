@@ -96,6 +96,7 @@ def run(exp: ExperimentConfig, out_dir: Path, args):
         persistent_workers=exp.train.persistent_workers,
         train_device=device,
         preload=True,
+        num_classes=exp.arch.num_classes,
     )
 
     float_state_path = out_dir / "model_float.pth"

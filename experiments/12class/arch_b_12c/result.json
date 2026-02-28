@@ -1,0 +1,54 @@
+{
+  "config": "arch_b_12c",
+  "arch": {
+    "model_type": "custom_dscnn",
+    "stem_ch": 16,
+    "stem_stride": 2,
+    "block_cfg": [
+      [
+        16,
+        1
+      ],
+      [
+        32,
+        2
+      ],
+      [
+        32,
+        1
+      ],
+      [
+        32,
+        2
+      ],
+      [
+        32,
+        1
+      ]
+    ],
+    "width_mult": 1.0,
+    "depth_mult": 1.0
+  },
+  "macc": 286368,
+  "params": 6108,
+  "float_size_kb": 26.1953125,
+  "train": {
+    "best_val_acc": 0.9336005100646689,
+    "best_val_loss": 0.2198365588247881,
+    "best_epoch": 28,
+    "epochs_ran": 28,
+    "early_stopped": true
+  },
+  "float": {
+    "acc": 0.9296158612143742,
+    "loss": 0.22917008673562167,
+    "infer_ms": 0.9731455000292044
+  },
+  "int8": {
+    "acc": 0.9278810408921933,
+    "loss": 0.2295931115474225,
+    "infer_ms": 0.9866104999673553,
+    "size_kb": 6.3046875
+  },
+  "onnx_path": "experiments\\12class\\arch_b_12c\\model_opset13.onnx"
+}

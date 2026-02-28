@@ -1,0 +1,33 @@
+{
+  "config": "mobilenet_min_12c",
+  "arch": {
+    "model_type": "mobilenet",
+    "stem_ch": 16,
+    "stem_stride": 2,
+    "block_cfg": null,
+    "width_mult": 0.1,
+    "depth_mult": 0.2
+  },
+  "macc": 683848,
+  "params": 13996,
+  "float_size_kb": 58.8828125,
+  "train": {
+    "best_val_acc": 0.9328718462519355,
+    "best_val_loss": 0.21806787497116065,
+    "best_epoch": 27,
+    "epochs_ran": 27,
+    "early_stopped": true
+  },
+  "float": {
+    "acc": 0.92878975629905,
+    "loss": 0.23963764336650437,
+    "infer_ms": 1.4468000001215842
+  },
+  "int8": {
+    "acc": 0.9226765799256506,
+    "loss": 0.2497221169394603,
+    "infer_ms": 1.6795950000232551,
+    "size_kb": 14.2734375
+  },
+  "onnx_path": "experiments\\12class\\mobilenet_min_12c\\model_opset13.onnx"
+}

@@ -18,8 +18,18 @@ from kws.config import AudioConfig
 
 
 KEYWORDS_6 = ["go", "stop", "left", "right", "up", "down"]
+KEYWORDS_10 = ["yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
 CLASS_NAMES = ["go", "stop", "left", "right", "up", "down", "unknown", "silence"]
 NUM_CLASSES = len(CLASS_NAMES)
+
+
+def _keywords_for_num_classes(num_classes: int) -> List[str]:
+    if num_classes == 8:
+        return KEYWORDS_6
+    elif num_classes == 12:
+        return KEYWORDS_10
+    else:
+        raise ValueError(f"Unsupported num_classes={num_classes}, expected 8 or 12")
 
 
 def collate_kws(batch: List[Tuple[torch.Tensor, int]]):
@@ -45,6 +55,7 @@ class SpeechCommandsMFCC12(Dataset):
         self,
         subset: str,
         audio_cfg: AudioConfig,
+        keywords: Optional[List[str]] = None,
         silence_ratio: float = 0.10,
         cache_dir: Optional[str] = "./cache_mfcc",
         use_cache: bool = True,
@@ -64,9 +75,12 @@ class SpeechCommandsMFCC12(Dataset):
         if self.use_cache:
             os.makedirs(self.cache_dir, exist_ok=True)
 
-        self.label2idx: Dict[str, int] = {k: i for i, k in enumerate(KEYWORDS_6)}
-        self.unknown_idx = 6
-        self.silence_idx = 7
+        kw = keywords if keywords is not None else KEYWORDS_6
+        self.keywords = kw
+        self.label2idx: Dict[str, int] = {k: i for i, k in enumerate(kw)}
+        self.unknown_idx = len(kw)
+        self.silence_idx = len(kw) + 1
+        self.num_classes = len(kw) + 2
 
         self.base_len = len(self.ds)
         self.silence_len = int(self.base_len * silence_ratio)
@@ -93,7 +107,8 @@ class SpeechCommandsMFCC12(Dataset):
             f"fft{audio_cfg.n_fft}_win{audio_cfg.win_length}_hop{audio_cfg.hop_length}_"
             f"mels{audio_cfg.n_mels}_mfcc{audio_cfg.n_mfcc}_"
             f"fmin{audio_cfg.f_min}_fmax{fmax}_"
-            f"len{audio_cfg.fixed_num_samples}"
+            f"len{audio_cfg.fixed_num_samples}_"
+            f"nc{self.num_classes}"
         )
 
     def __len__(self) -> int:
@@ -270,12 +285,13 @@ class _ShuffledTensorDataLoader:
 
 def make_loaders(audio_cfg: AudioConfig, batch_size: int, num_workers: int,
                  pin_memory: bool = True, prefetch_factor: int = 4, persistent_workers: bool = True,
-                 train_device: str = "cuda", preload: bool = True):
+                 train_device: str = "cuda", preload: bool = True, num_classes: int = 8):
     cache_dir = "./cache_mfcc"
+    keywords = _keywords_for_num_classes(num_classes)
 
-    train_ds = SpeechCommandsMFCC12("training", audio_cfg, silence_ratio=0.10, cache_dir=cache_dir, use_cache=True)
-    val_ds = SpeechCommandsMFCC12("validation", audio_cfg, silence_ratio=0.10, cache_dir=cache_dir, use_cache=True)
-    test_ds = SpeechCommandsMFCC12("testing", audio_cfg, silence_ratio=0.10, cache_dir=cache_dir, use_cache=True)
+    train_ds = SpeechCommandsMFCC12("training", audio_cfg, keywords=keywords, silence_ratio=0.10, cache_dir=cache_dir, use_cache=True)
+    val_ds = SpeechCommandsMFCC12("validation", audio_cfg, keywords=keywords, silence_ratio=0.10, cache_dir=cache_dir, use_cache=True)
+    test_ds = SpeechCommandsMFCC12("testing", audio_cfg, keywords=keywords, silence_ratio=0.10, cache_dir=cache_dir, use_cache=True)
 
     if preload:
         # Preload all data into GPU memory — eliminates all I/O during training

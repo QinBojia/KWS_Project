@@ -1,0 +1,33 @@
+{
+  "config": "bcresnet_287k_12c",
+  "arch": {
+    "model_type": "bcresnet",
+    "stem_ch": 16,
+    "stem_stride": 2,
+    "block_cfg": null,
+    "width_mult": 1.0,
+    "depth_mult": 1.0
+  },
+  "macc": 290056,
+  "params": 848,
+  "float_size_kb": 4.53125,
+  "train": {
+    "best_val_acc": 0.7806721923672466,
+    "best_val_loss": 0.6580478770648182,
+    "best_epoch": 49,
+    "epochs_ran": 49,
+    "early_stopped": false
+  },
+  "float": {
+    "acc": 0.7695167286245354,
+    "loss": 0.6889134971662205,
+    "infer_ms": 1.3720550001016818
+  },
+  "int8": {
+    "acc": 0.706815365551425,
+    "loss": 0.9527822399940623,
+    "infer_ms": 2.060821500053862,
+    "size_kb": 2.26953125
+  },
+  "onnx_path": "experiments\\12class\\bcresnet_287k_12c\\model_opset13.onnx"
+}

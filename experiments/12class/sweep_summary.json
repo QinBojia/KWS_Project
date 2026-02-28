@@ -1,0 +1,188 @@
+[
+  {
+    "config": "arch_b_12c",
+    "arch": {
+      "model_type": "custom_dscnn",
+      "stem_ch": 16,
+      "stem_stride": 2,
+      "block_cfg": [
+        [
+          16,
+          1
+        ],
+        [
+          32,
+          2
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          32,
+          2
+        ],
+        [
+          32,
+          1
+        ]
+      ],
+      "width_mult": 1.0,
+      "depth_mult": 1.0
+    },
+    "macc": 286368,
+    "params": 6108,
+    "float_size_kb": 26.1953125,
+    "train": {
+      "best_val_acc": 0.9336005100646689,
+      "best_val_loss": 0.2198365588247881,
+      "best_epoch": 28,
+      "epochs_ran": 28,
+      "early_stopped": true
+    },
+    "float": {
+      "acc": 0.9296158612143742,
+      "loss": 0.22917008673562167,
+      "infer_ms": 0.9731455000292044
+    },
+    "int8": {
+      "acc": 0.9278810408921933,
+      "loss": 0.2295931115474225,
+      "infer_ms": 0.9866104999673553,
+      "size_kb": 6.3046875
+    },
+    "onnx_path": "experiments\\12class\\arch_b_12c\\model_opset13.onnx"
+  },
+  {
+    "config": "tenet_287k_12c",
+    "arch": {
+      "model_type": "tenet",
+      "stem_ch": 16,
+      "stem_stride": 2,
+      "block_cfg": null,
+      "width_mult": 1.0,
+      "depth_mult": 1.0
+    },
+    "macc": 284992,
+    "params": 9084,
+    "float_size_kb": 38.4453125,
+    "train": {
+      "best_val_acc": 0.9540030968212041,
+      "best_val_loss": 0.1495730465411397,
+      "best_epoch": 35,
+      "epochs_ran": 35,
+      "early_stopped": true
+    },
+    "float": {
+      "acc": 0.9512598099958695,
+      "loss": 0.15511305613819068,
+      "infer_ms": 0.7646929999464191
+    },
+    "int8": {
+      "acc": 0.950185873605948,
+      "loss": 0.15806504180229053,
+      "infer_ms": 1.0521150000568014,
+      "size_kb": 9.484375
+    },
+    "onnx_path": "experiments\\12class\\tenet_287k_12c\\model_opset13.onnx"
+  },
+  {
+    "config": "liconet_287k_12c",
+    "arch": {
+      "model_type": "liconet",
+      "stem_ch": 16,
+      "stem_stride": 2,
+      "block_cfg": null,
+      "width_mult": 1.0,
+      "depth_mult": 1.0
+    },
+    "macc": 286060,
+    "params": 8152,
+    "float_size_kb": 34.6015625,
+    "train": {
+      "best_val_acc": 0.9459877948811367,
+      "best_val_loss": 0.1784786000135389,
+      "best_epoch": 14,
+      "epochs_ran": 14,
+      "early_stopped": true
+    },
+    "float": {
+      "acc": 0.9335811648079306,
+      "loss": 0.2067416666248311,
+      "infer_ms": 0.9133704999112524
+    },
+    "int8": {
+      "acc": 0.9316811235026848,
+      "loss": 0.20905812241804264,
+      "infer_ms": 1.2666444999922533,
+      "size_kb": 8.58984375
+    },
+    "onnx_path": "experiments\\12class\\liconet_287k_12c\\model_opset13.onnx"
+  },
+  {
+    "config": "bcresnet_287k_12c",
+    "arch": {
+      "model_type": "bcresnet",
+      "stem_ch": 16,
+      "stem_stride": 2,
+      "block_cfg": null,
+      "width_mult": 1.0,
+      "depth_mult": 1.0
+    },
+    "macc": 290056,
+    "params": 848,
+    "float_size_kb": 4.53125,
+    "train": {
+      "best_val_acc": 0.7806721923672466,
+      "best_val_loss": 0.6580478770648182,
+      "best_epoch": 49,
+      "epochs_ran": 49,
+      "early_stopped": false
+    },
+    "float": {
+      "acc": 0.7695167286245354,
+      "loss": 0.6889134971662205,
+      "infer_ms": 1.3720550001016818
+    },
+    "int8": {
+      "acc": 0.706815365551425,
+      "loss": 0.9527822399940623,
+      "infer_ms": 2.060821500053862,
+      "size_kb": 2.26953125
+    },
+    "onnx_path": "experiments\\12class\\bcresnet_287k_12c\\model_opset13.onnx"
+  },
+  {
+    "config": "mobilenet_min_12c",
+    "arch": {
+      "model_type": "mobilenet",
+      "stem_ch": 16,
+      "stem_stride": 2,
+      "block_cfg": null,
+      "width_mult": 0.1,
+      "depth_mult": 0.2
+    },
+    "macc": 683848,
+    "params": 13996,
+    "float_size_kb": 58.8828125,
+    "train": {
+      "best_val_acc": 0.9328718462519355,
+      "best_val_loss": 0.21806787497116065,
+      "best_epoch": 27,
+      "epochs_ran": 27,
+      "early_stopped": true
+    },
+    "float": {
+      "acc": 0.92878975629905,
+      "loss": 0.23963764336650437,
+      "infer_ms": 1.4468000001215842
+    },
+    "int8": {
+      "acc": 0.9226765799256506,
+      "loss": 0.2497221169394603,
+      "infer_ms": 1.6795950000232551,
+      "size_kb": 14.2734375
+    },
+    "onnx_path": "experiments\\12class\\mobilenet_min_12c\\model_opset13.onnx"
+  }
+]

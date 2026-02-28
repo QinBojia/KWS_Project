@@ -1,0 +1,33 @@
+{
+  "config": "tenet_287k_12c",
+  "arch": {
+    "model_type": "tenet",
+    "stem_ch": 16,
+    "stem_stride": 2,
+    "block_cfg": null,
+    "width_mult": 1.0,
+    "depth_mult": 1.0
+  },
+  "macc": 284992,
+  "params": 9084,
+  "float_size_kb": 38.4453125,
+  "train": {
+    "best_val_acc": 0.9540030968212041,
+    "best_val_loss": 0.1495730465411397,
+    "best_epoch": 35,
+    "epochs_ran": 35,
+    "early_stopped": true
+  },
+  "float": {
+    "acc": 0.9512598099958695,
+    "loss": 0.15511305613819068,
+    "infer_ms": 0.7646929999464191
+  },
+  "int8": {
+    "acc": 0.950185873605948,
+    "loss": 0.15806504180229053,
+    "infer_ms": 1.0521150000568014,
+    "size_kb": 9.484375
+  },
+  "onnx_path": "experiments\\12class\\tenet_287k_12c\\model_opset13.onnx"
+}
