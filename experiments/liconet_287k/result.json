@@ -1,0 +1,33 @@
+{
+  "config": "liconet_287k",
+  "arch": {
+    "model_type": "liconet",
+    "stem_ch": 16,
+    "stem_stride": 2,
+    "block_cfg": null,
+    "width_mult": 1.0,
+    "depth_mult": 1.0
+  },
+  "macc": 285980,
+  "params": 8068,
+  "float_size_kb": 34.2734375,
+  "train": {
+    "best_val_acc": 0.967756626286547,
+    "best_val_loss": 0.11706623163358464,
+    "best_epoch": 24,
+    "epochs_ran": 24,
+    "early_stopped": true
+  },
+  "float": {
+    "acc": 0.955638166047088,
+    "loss": 0.14838395630179058,
+    "infer_ms": 1.102610500092851
+  },
+  "int8": {
+    "acc": 0.9541511771995044,
+    "loss": 0.15110211876328328,
+    "infer_ms": 1.2604834999365266,
+    "size_kb": 8.58984375
+  },
+  "onnx_path": "experiments\\liconet_287k\\model_opset13.onnx"
+}

@@ -1,6 +1,7 @@
 {
   "config": "arch_b",
   "arch": {
+    "model_type": "custom_dscnn",
     "stem_ch": 16,
     "stem_stride": 2,
     "block_cfg": [
@@ -24,20 +25,30 @@
         32,
         1
       ]
-    ]
+    ],
+    "width_mult": 1.0,
+    "depth_mult": 1.0
   },
   "macc": 286240,
   "params": 5976,
   "float_size_kb": 25.6796875,
+  "train": {
+    "best_val_acc": 0.953183350031879,
+    "best_val_loss": 0.15196332793989184,
+    "best_epoch": 23,
+    "epochs_ran": 23,
+    "early_stopped": true
+  },
   "float": {
-    "acc": 0.9497728211482859,
-    "loss": 0.16490553096647406,
-    "infer_ms": 1.2084854999920935
+    "acc": 0.9471292854192482,
+    "loss": 0.1651229329373952,
+    "infer_ms": 1.5785560000222176
   },
   "int8": {
-    "acc": 0.9494423791821561,
-    "loss": 0.16941183347962632,
-    "infer_ms": 1.334914499984734,
+    "acc": 0.9448988021478728,
+    "loss": 0.1690250700857942,
+    "infer_ms": 1.2702025000180583,
     "size_kb": 6.3046875
-  }
+  },
+  "onnx_path": "experiments\\arch_b\\model_opset13.onnx"
 }
