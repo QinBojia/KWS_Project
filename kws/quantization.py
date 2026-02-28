@@ -20,14 +20,26 @@ class QuantizableWrapper(nn.Module):
 
 
 def fuse_for_quant(model: nn.Module) -> nn.Module:
-    """Fuse Conv+BN+ReLU operators for better quantization."""
+    """Fuse Conv+BN+ReLU operators for better quantization.
+
+    Handles different model types: CustomDSCNN, MobileNet, TENet, LiCoNet, BCResNet.
+    For models without explicit fusion support, returns the model as-is
+    (FX graph mode quantization will handle fusion automatically).
+    """
+    from kws.models import CustomDSCNN, MobileNetStyleKWS, DSConvBlock
+
     model.eval()
-    torch.ao.quantization.fuse_modules(model.stem, ["0", "1", "2"], inplace=True)
 
-    for blk in model.features:
-        torch.ao.quantization.fuse_modules(blk.dw, ["0", "1", "2"], inplace=True)
-        torch.ao.quantization.fuse_modules(blk.pw, ["0", "1", "2"], inplace=True)
+    # Only manually fuse DSConvBlock-based models (CustomDSCNN, MobileNet)
+    if isinstance(model, (CustomDSCNN, MobileNetStyleKWS)):
+        torch.ao.quantization.fuse_modules(model.stem, ["0", "1", "2"], inplace=True)
+        for blk in model.features:
+            if isinstance(blk, DSConvBlock):
+                torch.ao.quantization.fuse_modules(blk.dw, ["0", "1", "2"], inplace=True)
+                torch.ao.quantization.fuse_modules(blk.pw, ["0", "1", "2"], inplace=True)
 
+    # For TENet, LiCoNet, BCResNet: skip manual fusion.
+    # FX graph mode quantization auto-detects fusible Conv+BN+ReLU patterns.
     return model
 
 
