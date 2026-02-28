@@ -253,10 +253,9 @@ class TENet(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x: (B, 1, T, F) where T=62 frames, F=13 MFCC
-        if x.dim() == 4:
-            x = x.squeeze(1)        # (B, T, F)
-            x = x.permute(0, 2, 1)  # (B, F, T) — freq as channels
-        # x: (B, F, T)
+        # Reshape to (B, F, T) — treat freq bins as channels
+        x = x.squeeze(1)        # (B, T, F)
+        x = x.permute(0, 2, 1)  # (B, F, T)
         x = self.stem(x)
         x = self.features(x)
         x = self.pool(x).squeeze(-1)
@@ -358,10 +357,9 @@ class LiCoNet(nn.Module):
         self.fc = nn.Linear(width, num_classes)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # x: (B, 1, T, F)
-        if x.dim() == 4:
-            x = x.squeeze(1)        # (B, T, F)
-            x = x.permute(0, 2, 1)  # (B, F, T)
+        # x: (B, 1, T, F) → (B, F, T)
+        x = x.squeeze(1)        # (B, T, F)
+        x = x.permute(0, 2, 1)  # (B, F, T)
         x = self.stem(x)
         x = self.blocks(x)
         x = self.pool(x).squeeze(-1)
@@ -396,14 +394,13 @@ class SubSpectralNorm(nn.Module):
         # x: (B, C, F, T)
         B, C, F_orig, T = x.shape
         S = self.sub_bands
-        F = F_orig
-        if F % S != 0:
-            pad = S - F % S
-            x = nn.functional.pad(x, (0, 0, 0, pad))
-            F = F + pad
-        x = x.reshape(B, C * S, F // S, T)
+        # Always pad frequency dim to next multiple of S (no-op if already divisible)
+        pad = (S - F_orig % S) % S
+        x = nn.functional.pad(x, (0, 0, 0, pad))
+        F_padded = F_orig + pad
+        x = x.reshape(B, C * S, F_padded // S, T)
         x = self.bn(x)
-        x = x.reshape(B, C, F, T)
+        x = x.reshape(B, C, F_padded, T)
         return x[:, :, :F_orig, :]
 
 
@@ -533,12 +530,10 @@ class BCResNet(nn.Module):
         self.fc = nn.Linear(in_ch, num_classes)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # x: (B, 1, T, F) — standard MFCC input
-        if x.dim() == 4 and x.shape[1] == 1:
-            # Reshape to (B, 1, F, T) for 2D convolutions
-            x = x.squeeze(1)         # (B, T, F)
-            x = x.permute(0, 2, 1)   # (B, F, T)
-            x = x.unsqueeze(1)       # (B, 1, F, T)
+        # x: (B, 1, T, F) → (B, 1, F, T) for 2D convolutions
+        x = x.squeeze(1)         # (B, T, F)
+        x = x.permute(0, 2, 1)   # (B, F, T)
+        x = x.unsqueeze(1)       # (B, 1, F, T)
         x = self.stem(x)
         x = self.features(x)
         x = self.pool(x).flatten(1)
