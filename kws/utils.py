@@ -41,6 +41,15 @@ def count_macc(model: torch.nn.Module, input_shape: tuple) -> int:
         macc = c_out * h_out * w_out * (c_in // groups) * kh * kw
         total_macc += macc
 
+    def _hook_conv1d(module, inp, out):
+        nonlocal total_macc
+        batch, c_out, l_out = out.shape
+        c_in = module.in_channels
+        k = module.kernel_size[0]
+        groups = module.groups
+        macc = c_out * l_out * (c_in // groups) * k
+        total_macc += macc
+
     def _hook_linear(module, inp, out):
         nonlocal total_macc
         total_macc += module.in_features * module.out_features
@@ -48,6 +57,8 @@ def count_macc(model: torch.nn.Module, input_shape: tuple) -> int:
     for m in model.modules():
         if isinstance(m, torch.nn.Conv2d):
             hooks.append(m.register_forward_hook(_hook_conv2d))
+        elif isinstance(m, torch.nn.Conv1d):
+            hooks.append(m.register_forward_hook(_hook_conv1d))
         elif isinstance(m, torch.nn.Linear):
             hooks.append(m.register_forward_hook(_hook_linear))
 

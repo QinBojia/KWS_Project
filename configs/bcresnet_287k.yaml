@@ -1,0 +1,27 @@
+name: bcresnet_287k
+
+model:
+  type: bcresnet
+  # BC-ResNet: 3 stages [4,8,12] channels, 1 block each, all stride-1
+  # MACC ~290,008, params ~796
+  channels_list: [4, 8, 12]
+  layers_list: [1, 1, 1]
+  strides_list: [1, 1, 1]
+  sub_bands: 5
+  num_classes: 8
+  dropout: 0.1
+
+audio:
+  sample_rate: 16000
+  n_mels: 16
+  n_mfcc: 13
+  win_length: 512
+  hop_length: 256
+
+train:
+  batch_size: 1024
+  epochs: 50
+  lr: 0.001
+  weight_decay: 0.0001
+  early_stop_patience: 5
+  seed: 123

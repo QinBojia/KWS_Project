@@ -56,7 +56,7 @@ class TrainConfig:
 class ArchConfig:
     """Architecture definition, loadable from YAML."""
     name: str = "unnamed"
-    model_type: str = "custom_dscnn"  # "custom_dscnn" or "mobilenet"
+    model_type: str = "custom_dscnn"
 
     # CustomDSCNN parameters
     stem_ch: int = 16
@@ -66,6 +66,27 @@ class ArchConfig:
     # MobileNetStyleKWS parameters
     width_mult: float = 1.0
     depth_mult: float = 1.0
+
+    # TENet parameters
+    n_channels: List[int] = field(default_factory=list)
+    n_strides: List[int] = field(default_factory=list)
+    n_ratios: List[int] = field(default_factory=list)
+    n_layers: List[int] = field(default_factory=list)
+    kernel_size: int = 9
+    in_channels: int = 13
+
+    # LiCoNet parameters
+    width: int = 72
+    n_blocks: int = 5
+    lico_kernel_size: int = 5
+    expansion: int = 6
+    strides: List[int] = field(default_factory=list)
+
+    # BC-ResNet parameters
+    channels_list: List[int] = field(default_factory=list)
+    layers_list: List[int] = field(default_factory=list)
+    strides_list: List[int] = field(default_factory=list)
+    sub_bands: int = 5
 
     # Common
     num_classes: int = 8
@@ -105,11 +126,32 @@ def load_config(yaml_path: str) -> ExperimentConfig:
     arch = ArchConfig(
         name=name,
         model_type=model_type,
+        # CustomDSCNN
         stem_ch=model_dict.get("stem_ch", 16),
         stem_stride=model_dict.get("stem_stride", 2),
         block_cfg=block_cfg,
+        # MobileNet
         width_mult=model_dict.get("width_mult", 1.0),
         depth_mult=model_dict.get("depth_mult", 1.0),
+        # TENet
+        n_channels=model_dict.get("n_channels", []),
+        n_strides=model_dict.get("n_strides", []),
+        n_ratios=model_dict.get("n_ratios", []),
+        n_layers=model_dict.get("n_layers", []),
+        kernel_size=model_dict.get("kernel_size", 9),
+        in_channels=model_dict.get("in_channels", 13),
+        # LiCoNet
+        width=model_dict.get("width", 72),
+        n_blocks=model_dict.get("n_blocks", 5),
+        lico_kernel_size=model_dict.get("lico_kernel_size", 5),
+        expansion=model_dict.get("expansion", 6),
+        strides=model_dict.get("strides", []),
+        # BC-ResNet
+        channels_list=model_dict.get("channels_list", []),
+        layers_list=model_dict.get("layers_list", []),
+        strides_list=model_dict.get("strides_list", []),
+        sub_bands=model_dict.get("sub_bands", 5),
+        # Common
         num_classes=model_dict.get("num_classes", 8),
         dropout=model_dict.get("dropout", 0.1),
     )
@@ -119,7 +161,8 @@ def load_config(yaml_path: str) -> ExperimentConfig:
 
 def build_model(arch: ArchConfig):
     """Instantiate a model from an ArchConfig."""
-    from kws.models import CustomDSCNN, MobileNetStyleKWS
+    from kws.models import (CustomDSCNN, MobileNetStyleKWS,
+                             TENet, LiCoNet, BCResNet)
 
     if arch.model_type == "custom_dscnn":
         return CustomDSCNN(
@@ -135,6 +178,37 @@ def build_model(arch: ArchConfig):
             width_mult=arch.width_mult,
             dropout=arch.dropout,
             depth_mult=arch.depth_mult,
+        )
+    elif arch.model_type == "tenet":
+        return TENet(
+            n_channels=arch.n_channels,
+            n_strides=arch.n_strides,
+            n_ratios=arch.n_ratios,
+            n_layers=arch.n_layers,
+            num_classes=arch.num_classes,
+            in_channels=arch.in_channels,
+            kernel_size=arch.kernel_size,
+            dropout=arch.dropout,
+        )
+    elif arch.model_type == "liconet":
+        return LiCoNet(
+            width=arch.width,
+            n_blocks=arch.n_blocks,
+            kernel_size=arch.lico_kernel_size,
+            expansion=arch.expansion,
+            num_classes=arch.num_classes,
+            in_channels=arch.in_channels,
+            dropout=arch.dropout,
+            strides=arch.strides if arch.strides else None,
+        )
+    elif arch.model_type == "bcresnet":
+        return BCResNet(
+            channels_list=arch.channels_list,
+            layers_list=arch.layers_list,
+            strides_list=arch.strides_list if arch.strides_list else None,
+            num_classes=arch.num_classes,
+            sub_bands=arch.sub_bands,
+            dropout=arch.dropout,
         )
     else:
         raise ValueError(f"Unknown model_type: {arch.model_type}")

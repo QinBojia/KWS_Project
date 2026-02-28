@@ -1,0 +1,29 @@
+name: liconet_287k
+
+model:
+  type: liconet
+  # LiCoNet: width=20, 4 blocks, kernel=7, expansion=2, stride-2 on block 2
+  # MACC ~285,980, params ~8,068
+  width: 20
+  n_blocks: 4
+  lico_kernel_size: 7
+  expansion: 2
+  strides: [1, 2, 1, 1]
+  in_channels: 13
+  num_classes: 8
+  dropout: 0.1
+
+audio:
+  sample_rate: 16000
+  n_mels: 16
+  n_mfcc: 13
+  win_length: 512
+  hop_length: 256
+
+train:
+  batch_size: 1024
+  epochs: 50
+  lr: 0.001
+  weight_decay: 0.0001
+  early_stop_patience: 5
+  seed: 123
