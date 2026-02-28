@@ -1,0 +1,24 @@
+name: arch_a
+
+model:
+  type: custom_dscnn
+  stem_ch: 4
+  stem_stride: 1
+  block_cfg: [[8, 1], [8, 2], [16, 1], [16, 2], [32, 1], [32, 2], [32, 1], [32, 1]]
+  num_classes: 8
+  dropout: 0.1
+
+audio:
+  sample_rate: 16000
+  n_mels: 16
+  n_mfcc: 13
+  win_length: 512
+  hop_length: 256
+
+train:
+  batch_size: 1024
+  epochs: 50
+  lr: 0.001
+  weight_decay: 0.0001
+  early_stop_patience: 5
+  seed: 123
