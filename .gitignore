@@ -1,13 +1,14 @@
 /dataset/
 /data/
 /cache_mfcc/
-/__pycache__/
+__pycache__/
 /.claude/
 /.venv/
 nul
 
-# Intermediate experiment outputs (final results in outputs_custom/)
+# Legacy experiment output directories (results migrated to experiments/)
 /outputs/
+/outputs_custom/
 /outputs_grid/
 /outputs_small/
 /outputs_depth_only/
