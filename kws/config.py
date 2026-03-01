@@ -51,6 +51,17 @@ class TrainConfig:
     early_stop_patience: int = 5
     early_stop_min_delta: float = 0.0
 
+    # Training enhancements (all default to off for backward compatibility)
+    scheduler: str = "none"         # "none" | "cosine"
+    warmup_epochs: int = 5
+    label_smoothing: float = 0.0
+    mixup_alpha: float = 0.0
+    spec_augment: bool = False
+    spec_time_masks: int = 2
+    spec_time_width: int = 5
+    spec_freq_masks: int = 1
+    spec_freq_width: int = 2
+
 
 @dataclass
 class ArchConfig:

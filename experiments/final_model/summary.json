@@ -1,0 +1,28 @@
+{
+  "arch": "tenet_grid_winner",
+  "stem_ch": 14,
+  "block_ch": 14,
+  "n_blocks": 4,
+  "strides": [
+    2,
+    2,
+    1,
+    1
+  ],
+  "n_layers": [
+    1,
+    2,
+    1,
+    1
+  ],
+  "ratio": 4,
+  "kernel": 9,
+  "macc": 276136,
+  "params": 12822,
+  "best_epoch": 273,
+  "val_acc_float": 0.973950268694781,
+  "test_acc_float": 0.9684427922346138,
+  "test_acc_int8": 0.9676166873192895,
+  "int8_size_kb": 14.0,
+  "float_size_kb": 55.5
+}
